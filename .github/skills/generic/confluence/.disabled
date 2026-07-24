@@ -1,0 +1,3 @@
+
+Confluence CLI is disabled. This template-managed marker lets Copier remove the legacy
+SKILL.md during updates; the repository uses the Confluence MCP server instead.

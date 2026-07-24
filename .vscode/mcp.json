@@ -1,0 +1,50 @@
+{
+  "inputs": [
+    {
+      "id": "ado_pat_b64",
+      "type": "promptString",
+      "password": true,
+      "description": "Azure DevOps PAT, base64-encoded as 'email:pat' — see ai/SETUP-COPILOT.md. Stored in VS Code's secret store, never written to this file."
+    },
+    {
+      "id": "confluence_pat",
+      "type": "promptString",
+      "password": true,
+      "description": "Confluence Data Center Personal Access Token — see ai/SETUP-COPILOT.md. Stored in VS Code's secret store, never written to this file."
+    }
+  ],
+  "servers": {
+    "azure-devops": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@azure-devops/mcp",
+        "DevOpsAD",
+        "-d",
+        "core",
+        "repositories",
+        "work",
+        "work-items",
+        "test-plans",
+        "--authentication",
+        "pat"
+      ],
+      "env": {
+        "PERSONAL_ACCESS_TOKEN": "${input:ado_pat_b64}"
+      }
+    },
+    "figma": {
+      "url": "http://127.0.0.1:3845/mcp",
+      "type": "http"
+    },
+    "confluence": {
+      "command": "uvx",
+      "args": ["mcp-atlassian@0.21.1"],
+      "env": {
+        "CONFLUENCE_URL": "https://confluence.adnoc.ae",
+        "CONFLUENCE_PERSONAL_TOKEN": "${input:confluence_pat}",
+        "READ_ONLY_MODE": "false"
+      }
+    }
+  }
+}

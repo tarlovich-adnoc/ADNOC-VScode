@@ -1,0 +1,4 @@
+# Generated artifact — rebuild any time with: python ai/governance/dashboard.py
+dashboard.html
+# NOTE: agent-runs.jsonl is deliberately COMMITTED — it is how the org-wide rollup
+# reads team telemetry (same REST path as the learnings radar). See ai/governance/README.md.

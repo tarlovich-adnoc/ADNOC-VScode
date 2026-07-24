@@ -1,0 +1,22 @@
+# AI workflow gate — runs the committed CI validators on every PR.
+# Stdlib-only Node; no npm install. Wire this as a Branch Policy build validation on main.
+trigger:
+  branches: { include: [main] }
+pr:
+  branches: { include: [main] }
+
+jobs:
+- job: ai_workflow_gate
+  displayName: 'AI workflow gate'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - script: |
+      set -e
+      node .github/ci-validators/validate-frontmatter.js .github
+      node .github/ci-validators/validate-skills.js .github/skills
+      node .github/ci-validators/validate-no-personal-paths.js .
+      node .github/ci-validators/validate-mcp-config.js .vscode/mcp.json
+      node .github/ci-validators/check-unicode-safety.js
+      node .github/ci-validators/validate-no-secrets.js
+    displayName: 'Validate skills / agents / prompts / .vscode/mcp.json / unicode / secrets'

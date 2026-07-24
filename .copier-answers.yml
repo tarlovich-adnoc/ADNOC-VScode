@@ -1,0 +1,25 @@
+# This file records the template version + answers (the repo's "passport").
+# Changes here will be overwritten by Copier — do NOT edit by hand.
+_commit: v2.0.0
+_src_path: git@git.epam.com:adno-dib/adno-dib.git
+ado_auth_method: pat
+auto_merge_cost_emergency: false
+auto_skip_updates: false
+azure_org: DevOpsAD
+azure_project: OneMenu
+reviewer_strictness: moderate
+stack: dotnet
+team_name: onehub-team
+test_discipline: tests-required
+use_ba_pack: true
+use_confluence_cli: false
+use_deep_reviewer: true
+use_designer_pack: true
+use_devops_pack: true
+use_incident_response_prompt: true
+use_orchestrator: false
+use_pm_pack: false
+use_qa_pack: true
+use_security_skill: false
+use_spec_kit: true
+

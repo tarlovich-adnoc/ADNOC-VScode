@@ -1,0 +1,48 @@
+{
+  // Guarantee Copilot loads .github/copilot-instructions.md + .github/instructions/*
+  // (default is on, but an org/user override silently breaking it is the #1
+  // "Copilot ignores our rules" support ticket — pin it at repo level).
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "chat.agentSkillsLocations": {
+		".github/skills/generic": true,
+		".github/skills/ba": true,
+		".github/skills/qa": true,
+		".github/skills/pm": true,
+		".github/skills/designer": true,
+		".github/skills/devops": true,
+		".github/skills/optional": true,
+		".github/skills/team-local": true
+	},
+	// Custom agents (.agent.md) live in role subfolders — VS Code's default only scans the
+	// .github/agents root, so every location must be registered explicitly.
+	"chat.agentFilesLocations": {
+		".github/agents/generic": true,
+		".github/agents/ba": true,
+		".github/agents/qa": true,
+		".github/agents/pm": true,
+		".github/agents/devops": true,
+		".github/agents/designer": true,
+		".github/agents/team-local": true
+	},
+	"chat.promptFilesLocations": {
+		".github/prompts": true,
+		".github/prompts/generic": true,
+		".github/prompts/ba": true,
+		".github/prompts/qa": true,
+		".github/prompts/devops": true,
+		".github/prompts/pm": true,
+		".github/prompts/designer": true,
+		".github/prompts/optional": true,
+		".github/prompts/team-local": true
+	},
+	"chat.hookFilesLocations": {
+		".github/hooks/generic": true,
+		".github/hooks/ba": true,
+		".github/hooks/qa": true,
+		".github/hooks/devops": true,
+		".github/hooks/pm": true,
+		".github/hooks/designer": true,
+		".github/hooks/optional": true,
+		".github/hooks/team-local": true
+	}
+}

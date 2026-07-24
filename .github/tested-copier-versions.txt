@@ -1,0 +1,7 @@
+# Copier versions this template was render-tested against.
+# Informational only — there is NO CI validator enforcing this range yet (roadmap item).
+# If a scaffold/update misbehaves, first check your Copier is within [min, max].
+min: 9.0.0
+max: 9.99.99
+tested:
+  - 9.15.1
