@@ -20,6 +20,9 @@ Check before installing, verify every changed tool, and stop only when installat
 - Prefer Homebrew on macOS, winget on Windows, and pipx for Copier.
 - Verify Git is available and the user has authenticated read access to the AI SDLC template on
   `git.epam.com`.
+- Run Git access checks non-interactively. Use credentials already available through the user's
+  configured credential helper or SSH agent, but never open a terminal, GUI, or IDE credential
+  prompt during a check. If credentials are unavailable, let the check fail and report setup advice.
 - Never install Copier globally with `pip`.
 - Never install an unbounded Copier version. If `.github/tested-copier-versions.txt` exists, read
   its `min` and `max`; otherwise use `>=9.0.0,<=9.99.99`.
@@ -74,21 +77,49 @@ git --version
 
 Test authenticated read access over both HTTPS/PAT and SSH.
 
+These checks must use only credentials that are already configured. They must never ask the user
+for a Git username, password, PAT, or SSH key passphrase. A missing or expired credential is an
+authentication failure to report after both transports have been tested, not a reason to prompt.
+
 ### HTTPS/PAT on macOS
 
 ```bash
-GCM_INTERACTIVE=Never GIT_TERMINAL_PROMPT=0 git ls-remote https://git.epam.com/adno-dib/adno-dib.git HEAD
+GCM_INTERACTIVE=0 \
+GIT_TERMINAL_PROMPT=0 \
+GIT_ASKPASS=/usr/bin/false \
+SSH_ASKPASS=/usr/bin/false \
+git -c credential.interactive=false ls-remote https://git.epam.com/adno-dib/adno-dib.git HEAD
 ```
 
 ### HTTPS/PAT on Windows
 
 ```powershell
-$env:GCM_INTERACTIVE = "Never"
-$env:GIT_TERMINAL_PROMPT = "0"
-git ls-remote https://git.epam.com/adno-dib/adno-dib.git HEAD
-Remove-Item Env:GIT_TERMINAL_PROMPT -ErrorAction SilentlyContinue
-Remove-Item Env:GCM_INTERACTIVE -ErrorAction SilentlyContinue
+$savedGitPromptEnvironment = @{
+    GCM_INTERACTIVE = [Environment]::GetEnvironmentVariable("GCM_INTERACTIVE", "Process")
+    GIT_TERMINAL_PROMPT = [Environment]::GetEnvironmentVariable("GIT_TERMINAL_PROMPT", "Process")
+    GIT_ASKPASS = [Environment]::GetEnvironmentVariable("GIT_ASKPASS", "Process")
+    SSH_ASKPASS = [Environment]::GetEnvironmentVariable("SSH_ASKPASS", "Process")
+}
+$noPromptAskPass = Join-Path ([IO.Path]::GetTempPath()) ("git-no-prompt-{0}.cmd" -f [guid]::NewGuid())
+Set-Content -LiteralPath $noPromptAskPass -Value '@exit /b 1' -Encoding Ascii
+
+try {
+    $env:GCM_INTERACTIVE = "0"
+    $env:GIT_TERMINAL_PROMPT = "0"
+    $env:GIT_ASKPASS = $noPromptAskPass
+    $env:SSH_ASKPASS = $noPromptAskPass
+    git -c credential.interactive=false ls-remote https://git.epam.com/adno-dib/adno-dib.git HEAD
+    $httpsAccessExitCode = $LASTEXITCODE
+} finally {
+    foreach ($name in $savedGitPromptEnvironment.Keys) {
+        [Environment]::SetEnvironmentVariable($name, $savedGitPromptEnvironment[$name], "Process")
+    }
+    Remove-Item -LiteralPath $noPromptAskPass -Force -ErrorAction SilentlyContinue
+}
 ```
+
+Use `$httpsAccessExitCode` when classifying the HTTPS/PAT result. Do not rerun the command without
+the non-interactive controls when it fails.
 
 ### SSH on macOS
 

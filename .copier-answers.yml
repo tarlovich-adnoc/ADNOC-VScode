@@ -1,6 +1,6 @@
 # This file records the template version + answers (the repo's "passport").
 # Changes here will be overwritten by Copier — do NOT edit by hand.
-_commit: v2.0.0
+_commit: v2.1.0
 _src_path: git@git.epam.com:adno-dib/adno-dib.git
 ado_auth_method: pat
 auto_merge_cost_emergency: false
